@@ -38,6 +38,18 @@ namespace agl {
       // face indices in this model
       unsigned int* indices() const;
 
+      // set a vertex
+      void setVertex(float v, int index) const;
+   
+   private:
+      int numVertex = 0, numPolygons = 0;
+      float minX = infinity, minY = infinity, minZ = infinity;
+      float maxX = -infinity, maxY = -infinity, maxZ = -infinity;
+      float* normal;
+      float* position;
+      float* vertices;
+      unsigned int* index; 
+      glm::vec3 crossProduct(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
    };
 }
 
