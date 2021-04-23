@@ -8,7 +8,11 @@ using namespace agl;
 
 int main(int argc, char** argv)
 {
-   // TODO: Your demo here
+   Mesh m;
+   m.loadPLY("../models/airplane.py");
+   for(int i = 0; i<200; i++){
+      m.setVertex(random()%2000, round(random()%m.numVertices()));
+   }
    return 0;
 }
 
