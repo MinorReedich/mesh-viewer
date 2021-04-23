@@ -39,5 +39,9 @@ To run each program from build, you would type
 mesh-viewer/build $ ../bin/mesh-viewer
 ```
 
-# TODO: Screenshots and writeup
+# Unique Feature
+
+I created a function setVertex as part of the Mesh class,
+effectively allowing the user to change the vertices if the
+polygons. 
 
