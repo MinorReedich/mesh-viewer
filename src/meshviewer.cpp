@@ -244,14 +244,38 @@ int main(int argc, char** argv)
    LoadModels("../models/");
    LoadModel(0);
 
+   //GLuint shaderId = LoadShader("../shaders/unlit.vs", "../shaders/unlit.fs");
    GLuint shaderId = LoadShader("../shaders/phong.vs", "../shaders/phong.fs");
    glUseProgram(shaderId);
+
+   //glm::mat4 transform(1.0); // initialize to identity
+   glm::mat4 projection = glm::perspective(glm::radians(60.0f), 1.0f, 0.1f, 100.0f);
+   glm::mat4 modelMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
+   glm::mat4 camera = glm::lookAt(glm::vec3(0, 0, 1000), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+   GLuint mvpId = glGetUniformLocation(shaderId, "uMVP"); 
+   GLuint mvId = glGetUniformLocation(shaderId, "uMV"); 
+   GLuint nmvId = glGetUniformLocation(shaderId, "uNMV");
+
+   glUniform3f(glGetUniformLocation(shaderId, "uMaterial.Ks"), 1.0, 1.0, 1.0); 
+   glUniform3f(glGetUniformLocation(shaderId, "uMaterial.Kd"), 0.4, 0.6, 1.0); 
+   glUniform3f(glGetUniformLocation(shaderId, "uMaterial.Ka"), 0.1, 0.1, 0.1); 
+   glUniform1f(glGetUniformLocation(shaderId, "uMaterial.shininess"), 80.0); 
+   glUniform3f(glGetUniformLocation(shaderId, "uLight.position"), 100.0, 100.0, 100.0); 
+   glUniform3f(glGetUniformLocation(shaderId, "uLight.color"), 1.0, 1.0, 1.0);
 
    // Loop until the user closes the window 
    while (!glfwWindowShouldClose(window))
    {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers
 
+      mat4 mv = camera * modelMatrix;
+      mat4 mvp = projection * mv;
+      mat3 nmv = mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2]));
+      glUniformMatrix3fv(nmvId, 1, GL_FALSE, &nmv[0][0]); 
+      glUniformMatrix4fv(mvId, 1, GL_FALSE, &mv[0][0]); 
+      glUniformMatrix4fv(mvpId, 1, GL_FALSE, &mvp[0][0]);
+      
       // Draw primitive
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, theElementbuffer);
       glDrawElements(GL_TRIANGLES, theModel.numTriangles() * 3, GL_UNSIGNED_INT, (void*)0);
